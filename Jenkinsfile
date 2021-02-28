@@ -65,11 +65,11 @@ node {
         }
 
         stage('Deploy') {
-           sh 'curl -u jenkins:jenkins -T target/**.war "http://localhost:8080/manager/text/deploy?path=/devops&update=true"'
+           sh 'curl -u jenkins:jenkins -T target/**.war "http://localhost:8081/manager/text/deploy?path=/devops&update=true"'
         }
 
         stage("Smoke Test"){
-           sh "curl --retry-delay 10 --retry 5 http://localhost:8080/devops"
+           sh "curl --retry-delay 10 --retry 5 http://localhost:8081/devops"
         }
 
       }
@@ -87,11 +87,11 @@ node {
           }
         }
          stage('Deploy To Dev') {
-            sh 'curl -u jenkins:jenkins -T target/**.war "http://localhost:8080/manager/text/deploy?path=/devops&update=true"'
+            sh 'curl -u jenkins:jenkins -T target/**.war "http://localhost:8081/manager/text/deploy?path=/devops&update=true"'
          }
 
          stage("Smoke Test Dev"){
-             sh "curl --retry-delay 10 --retry 5 http://localhost:8080/devops"
+             sh "curl --retry-delay 10 --retry 5 http://localhost:8081/devops"
          }
 
          stage("QA Approval"){
@@ -100,9 +100,9 @@ node {
          }
 
          stage("Deploy from Artifactory to QA"){
-           retrieveArtifact = 'http://localhost:8081/artifactory/libs-release-local/com/example/devops/' + artifactVersion + '/devops-' + artifactVersion + '.war'
+           retrieveArtifact = 'http://localhost:8080/artifactory/libs-release-local/com/example/devops/' + artifactVersion + '/devops-' + artifactVersion + '.war'
            echo "${tagVersion} with artifact version ${artifactVersion}"
-           echo "Deploying war from http://localhost:8081/artifactory/libs-release-local/com/example/devops/${artifactVersion}/devops-${artifactVersion}.war"
+           echo "Deploying war from http://localhost:8080/artifactory/libs-release-local/com/example/devops/${artifactVersion}/devops-${artifactVersion}.war"
            sh 'curl -O ' + retrieveArtifact
            sh 'curl -u jenkins:jenkins -T *.war "http://localhost:7080/manager/text/deploy?path=/devops&update=true"'
          }
